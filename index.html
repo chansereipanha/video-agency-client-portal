@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cutroom — Client Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="#dashboard" aria-label="Cutroom home"><span class="brand-mark">C</span><span>CUTROOM</span></a>
+        <nav aria-label="Main navigation">
+          <button class="nav-link active" data-view="dashboard"><span>◈</span> Overview</button>
+          <button class="nav-link" data-view="clients"><span>◉</span> Clients</button>
+          <button class="nav-link" data-view="library"><span>▣</span> Content library</button>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="team-card"><span class="avatar small">MW</span><div><strong>Maia Wolfgramm</strong><small>Producer</small></div><button class="more" aria-label="Account options">•••</button></div>
+        </div>
+      </aside>
+
+      <main>
+        <header class="topbar"><button class="menu-button" aria-label="Open navigation">☰</button><div class="crumbs" id="crumbs">WORKSPACE / OVERVIEW</div><div class="top-actions"><button class="icon-button" aria-label="Notifications">♢</button><button class="help-button">?</button></div></header>
+        <div id="app"></div>
+      </main>
+    </div>
+
+    <dialog id="client-dialog">
+      <form method="dialog" id="client-form">
+        <div class="dialog-header"><div><p class="eyebrow" id="form-kicker">NEW CLIENT</p><h2 id="form-title">Add a client</h2></div><button class="close" value="cancel" aria-label="Close">×</button></div>
+        <div class="form-grid">
+          <label>Company name<input required name="company" placeholder="e.g. Koru Coffee Co." /></label>
+          <label>Industry<input required name="industry" placeholder="e.g. Hospitality" /></label>
+          <label>Primary contact<input required name="contact" placeholder="Full name" /></label>
+          <label>Email<input required type="email" name="email" placeholder="name@company.co.nz" /></label>
+        </div>
+        <label>Notes<textarea name="notes" placeholder="A little context for the production team…"></textarea></label>
+        <div class="dialog-actions"><button class="button secondary" value="cancel">Cancel</button><button class="button" id="save-client" value="default">Save client</button></div>
+      </form>
+    </dialog>
+    <script src="app.js"></script>
+  </body>
+</html>
