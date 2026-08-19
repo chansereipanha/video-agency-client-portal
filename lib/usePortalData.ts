@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Client,
   initialClients,
@@ -17,23 +17,30 @@ function read<T>(key: string, fallback: T): T {
   }
 }
 export function usePortalData() {
-  const [clients, setClients] = useState<Client[]>(() =>
-    typeof window === "undefined"
-      ? initialClients
-      : read(clientKey, initialClients),
-  );
-  const [resources, setResources] = useState<Resource[]>(() =>
-    typeof window === "undefined"
-      ? initialResources
-      : read(resourceKey, initialResources),
-  );
+  const [data, setData] = useState<{
+    clients: Client[];
+    resources: Resource[];
+    ready: boolean;
+  }>({ clients: initialClients, resources: initialResources, ready: false });
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setData({
+      clients: read(clientKey, initialClients),
+      resources: read(resourceKey, initialResources),
+      ready: true,
+    });
+  }, []);
+
+  const { clients, resources, ready } = data;
+
   const saveClients = (next: Client[]) => {
-    setClients(next);
+    setData((prev) => ({ ...prev, clients: next }));
     localStorage.setItem(clientKey, JSON.stringify(next));
   };
   const saveResources = (next: Resource[]) => {
-    setResources(next);
+    setData((prev) => ({ ...prev, resources: next }));
     localStorage.setItem(resourceKey, JSON.stringify(next));
   };
-  return { clients, resources, ready: true, saveClients, saveResources };
+  return { clients, resources, ready, saveClients, saveResources };
 }
