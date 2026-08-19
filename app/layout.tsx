@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import SidebarNav from "@/components/SidebarNav";
-import PortalHeader from "@/components/PortalHeader";
+import AuthGate from "@/components/AuthGate";
 import "./globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
 
@@ -23,24 +21,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body>
-        <div className="app-shell">
-          <aside className="sidebar">
-            <Link className="brand" href="/">
-              <span>c</span> CUTROOM
-            </Link>
-            <SidebarNav />
-            <div className="user-card">
-              <div className="avatar">MW</div>
-              <div>
-                <b>Maia Wolfgramm</b>
-                <small>Producer</small>
-              </div>
-            </div>
-          </aside>
-          <main className="content"><PortalHeader />{children}</main>
-        </div>
-      </body>
+      <body><AuthGate>{children}</AuthGate></body>
     </html>
   );
 }

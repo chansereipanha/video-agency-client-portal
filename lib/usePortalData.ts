@@ -1,21 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
+import { collection, doc, getDocs, onSnapshot, setDoc, writeBatch } from "firebase/firestore";
 import {
   Client,
   initialClients,
   initialResources,
   Resource,
 } from "@/lib/clients";
-const clientKey = "cutroom-clients";
-const resourceKey = "cutroom-resources";
-function read<T>(key: string, fallback: T): T {
-  try {
-    const value = localStorage.getItem(key);
-    return value ? JSON.parse(value) : fallback;
-  } catch {
-    return fallback;
-  }
-}
+import { db } from "@/lib/firebase";
 export function usePortalData() {
   const [data, setData] = useState<{
     clients: Client[];
@@ -24,23 +16,23 @@ export function usePortalData() {
   }>({ clients: initialClients, resources: initialResources, ready: false });
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setData({
-      clients: read(clientKey, initialClients),
-      resources: read(resourceKey, initialResources),
-      ready: true,
-    });
+    if (!db) return;
+    const seed = async () => { const [clientDocs, resourceDocs] = await Promise.all([getDocs(collection(db, "clients")), getDocs(collection(db, "resources"))]); if (clientDocs.empty && resourceDocs.empty) { const batch = writeBatch(db); initialClients.forEach((client) => batch.set(doc(db, "clients", client.id), client)); initialResources.forEach((resource) => batch.set(doc(db, "resources", resource.id), resource)); await batch.commit(); } };
+    void seed();
+    const clientsUnsubscribe = onSnapshot(collection(db, "clients"), (snapshot) => setData((current) => ({ ...current, clients: snapshot.docs.map((item) => item.data() as Client), ready: true })));
+    const resourcesUnsubscribe = onSnapshot(collection(db, "resources"), (snapshot) => setData((current) => ({ ...current, resources: snapshot.docs.map((item) => item.data() as Resource), ready: true })));
+    return () => { clientsUnsubscribe(); resourcesUnsubscribe(); };
   }, []);
 
   const { clients, resources, ready } = data;
 
   const saveClients = (next: Client[]) => {
     setData((prev) => ({ ...prev, clients: next }));
-    localStorage.setItem(clientKey, JSON.stringify(next));
+    if (db) void Promise.all(next.map((client) => setDoc(doc(db, "clients", client.id), client)));
   };
   const saveResources = (next: Resource[]) => {
     setData((prev) => ({ ...prev, resources: next }));
-    localStorage.setItem(resourceKey, JSON.stringify(next));
+    if (db) void Promise.all(next.map((resource) => setDoc(doc(db, "resources", resource.id), resource)));
   };
   return { clients, resources, ready, saveClients, saveResources };
 }
