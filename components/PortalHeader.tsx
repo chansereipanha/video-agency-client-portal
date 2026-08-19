@@ -2,9 +2,15 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function PortalHeader() {
   const pathname = usePathname();
+  const [isDark, setIsDark] = useState(() => typeof window !== "undefined" && localStorage.getItem("cutroom-theme") === "dark");
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDark);
+    localStorage.setItem("cutroom-theme", isDark ? "dark" : "light");
+  }, [isDark]);
   const crumbs =
     pathname === "/"
       ? [{ label: "WORKSPACE", href: "/" }, { label: "OVERVIEW" }]
@@ -31,7 +37,12 @@ export default function PortalHeader() {
           </span>
         ))}
       </div>
-      <span className="help">?</span>
+      <div className="header-actions">
+        <button className="theme-toggle" type="button" onClick={() => setIsDark((current) => !current)} aria-label="Toggle dark mode" title="Toggle dark mode">
+          {isDark ? "☀" : "◐"}
+        </button>
+        <span className="help">?</span>
+      </div>
     </header>
   );
 }

@@ -7,6 +7,14 @@
   --panel: #fff;
   --dark: #19281d;
 }
+:root.dark {
+  --ink: #edf4ed;
+  --muted: #b5c1b5;
+  --line: #3a4a3c;
+  --canvas: #111a13;
+  --panel: #1b281e;
+  --dark: #2a3d2e;
+}
 * {
   box-sizing: border-box;
 }
@@ -126,6 +134,9 @@ nav a.active {
   border-radius: 50%;
   font: bold 13px var(--font-geist-sans);
 }
+.header-actions { display: flex; align-items: center; gap: 13px; }
+.theme-toggle { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #91a091; background: transparent; color: #4d5d4f; cursor: pointer; font-size: 15px; }
+.theme-toggle:hover { background: #e8eee7; }
 .breadcrumbs {
   display: flex;
   gap: 7px;
@@ -600,6 +611,13 @@ nav a.active {
   text-align: center;
   color: #748174;
 }
+:root.dark .content > header { background: #172219; }
+:root.dark .card,:root.dark .stat,:root.dark .client,:root.dark .dialog { background: var(--panel); }
+:root.dark .client,:root.dark .client p,:root.dark .resource small,:root.dark .project small,:root.dark .hint,:root.dark .activity { color: var(--muted); }
+:root.dark .button.light,:root.dark .filter-panel button,:root.dark .resource-tabs button,:root.dark .edit-client { background: #29372c; color: #e5eee5; }
+:root.dark .search,:root.dark .fields input,:root.dark .fields textarea,:root.dark .resource-form input,:root.dark .sort select,:root.dark .client-select,:root.dark .resource-form select { background: #142016; color: #edf4ed; }
+:root.dark .theme-toggle { color: #edf4ed; border-color: #647766; }
+:root.dark .theme-toggle:hover { background: #29372c; }
 .resource-tabs {
   display: flex;
   gap: 7px;
