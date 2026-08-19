@@ -27,6 +27,10 @@ export default function ClientProfilePage() {
   useEffect(() => {
     if (editing) dialog.current?.showModal();
   }, [editing]);
+  function closeEditDialog() {
+    dialog.current?.close();
+    setEditing(false);
+  }
   if (!ready)
     return (
       <section className="page">
@@ -70,7 +74,7 @@ export default function ClientProfilePage() {
           : item,
       ),
     );
-    setEditing(false);
+    closeEditDialog();
   }
   function addResource(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -176,7 +180,7 @@ export default function ClientProfilePage() {
         </form>
       </section>
       <dialog className="dialog" ref={dialog} onClose={() => setEditing(false)}>
-        <button className="close" onClick={() => setEditing(false)}>
+        <button className="close" type="button" onClick={closeEditDialog}>
           ×
         </button>
         <h2>Edit client</h2>
@@ -212,7 +216,7 @@ export default function ClientProfilePage() {
             <button
               className="button light"
               type="button"
-              onClick={() => setEditing(false)}
+              onClick={closeEditDialog}
             >
               Cancel
             </button>
