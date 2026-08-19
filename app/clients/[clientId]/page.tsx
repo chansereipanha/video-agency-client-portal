@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { clients, resources } from "@/lib/clients";
+import { clients } from "@/lib/clients";
+import DetailList from "@/components/DetailList";
+import ResourceGrid from "@/components/ResourceGrid";
 
 export default async function ClientProfilePage(
     props: PageProps<"/clients/[clientId]">
@@ -39,11 +41,7 @@ export default async function ClientProfilePage(
                         <h2>Client details</h2>
                     </div>
 
-                    <div className="detail-list">
-                        <Detail label="Primary contact" value={client.contact} />
-                        <Detail label="Email" value={client.email} />
-                        <Detail label="Notes" value={client.notes} />
-                    </div>
+                    <DetailList details={[{ label: "Primary contact", value: client.contact }, { label: "Email", value: client.email }, { label: "Notes", value: client.notes }]} />
                 </section>
 
                 <section className="card">
@@ -54,40 +52,9 @@ export default async function ClientProfilePage(
                         </Link>
                     </div>
 
-                    <ResourceGrid client={client.name} />
+                    <ResourceGrid clientName={client.name} />
                 </section>
             </div>
         </section>
     );
 }
-
-function Detail({ label, value }: { label: string; value: string }) {
-    return (
-        <div className="detail">
-            <span>{label}</span>
-            <b>{value}</b>
-        </div>
-    );
-}
-
-export function ResourceGrid({ client }: { client: string }) {
-    return (
-        <div className="resources">
-            {resources.map(([name, meta, icon], index) => (
-                <article className="resource" key={name}>
-                <div className={`thumb ${index === 1 ? "blue" : index === 2 ? "gold" : ""}`}>
-                    {icon}
-                </div>
-
-                <div>
-                    <b>{name}</b>
-                    <small>
-                    {client} · {meta}
-                    </small>
-                </div>
-                </article>
-            ))}
-        </div>
-    );
-}
-

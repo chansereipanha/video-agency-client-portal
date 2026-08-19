@@ -1,7 +1,7 @@
 "use client";
-import Link from "next/link";
 import { FormEvent, useMemo, useRef, useState } from "react";
 import { Client, clients as initialClients } from "@/lib/clients";
+import ClientCard from "@/components/ClientCard";
 export default function ClientsPage() {
     const [clients, setClients] = useState(initialClients);
     const [query, setQuery] = useState("");
@@ -64,19 +64,7 @@ export default function ClientsPage() {
                 <span className="hint">{shown.length} clients</span>
             </div>
             <div className="client-grid">
-                {shown.map((c) => (
-                    <Link className="client" href={`/clients/${c.id}`} key={c.id}>
-                        <div className="client-logo" style={{ background: c.colour }}>
-                            {c.initials}
-                        </div>
-                        <h2>{c.name}</h2>
-                        <p>{c.industry}</p>
-                        <div className="client-meta">
-                            <span>{c.contact}</span>
-                            <span>{c.assets} ASSETS</span>
-                        </div>
-                    </Link>
-                ))}
+                {shown.map((client) => <ClientCard client={client} key={client.id} />)}
             </div>
             {shown.length === 0 && (
                 <div className="empty">No clients match that search.</div>

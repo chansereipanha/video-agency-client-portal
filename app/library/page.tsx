@@ -1,5 +1,5 @@
 import { clients } from "@/lib/clients";
-import { ResourceGrid } from "@/app/clients/[clientId]/page";
+import ResourceGrid from "@/components/ResourceGrid";
 export default function LibraryPage() {
     const client = clients[0];
     return (
@@ -35,7 +35,7 @@ export default function LibraryPage() {
                         </div>
                         <span className="label">NEWEST FIRST</span>
                     </div>
-                    <ResourceGrid client={client.name} />
+                    <ResourceGrid clientName={client.name} />
                 </section>
             </div>
         </section>
