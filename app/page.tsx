@@ -1,69 +1,132 @@
-import Image from "next/image";
-
+"use client";
+import Link from "next/link";
+import { usePortalData } from "@/lib/usePortalData";
 export default function Home() {
+  const { clients, resources } = usePortalData();
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <section className="page">
+      <div className="page-title">
+        <div>
+          <p className="eyebrow">WEDNESDAY, 19 AUGUST</p>
+          <h1>Kia ora, Maia.</h1>
+          <p>Here’s what’s moving across the studio today.</p>
+        </div>
+        <Link className="button" href="/clients">
+          + Add client
+        </Link>
+      </div>
+      <div className="stats">
+        <Stat
+          label="ACTIVE CLIENTS"
+          number={clients.length}
+          hint="+1 added this month"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+        <Stat label="LIVE PROJECTS" number={8} hint="3 awaiting review" />
+        <Stat
+          label="TOTAL ASSETS"
+          number={resources.length}
+          hint="+12 uploaded this week"
+        />
+      </div>
+      <div className="two-col">
+        <section className="card">
+          <div className="card-head">
+            <h2>Projects in motion</h2>
+            <Link className="link" href="/library">
+              View library →
+            </Link>
+          </div>
+          <Project
+            title="Harbour winter campaign"
+            sub="Harbour & Co. · Brand film"
+            status="IN REVIEW"
+            tone="review"
+          />
+          <Project
+            title="Studio launch series"
+            sub="Koru Wellness · Social"
+            status="EDITING"
+            tone=""
+            variant="two"
+          />
+          <Project
+            title="Coastal living, episode 04"
+            sub="Northland Escapes · Video series"
+            status="READY"
+            tone=""
+            variant="three"
+          />
+        </section>
+        <section className="card">
+          <div className="card-head">
+            <h2>Recent activity</h2>
+          </div>
+          <Activity
+            text="Tia Rangi left feedback on Harbour winter campaign"
+            time="24 minutes ago"
+          />
+          <Activity text="4 files added to Koru Wellness" time="2 hours ago" />
+          <Activity
+            text="Finn McLeod approved the Rimu walkthrough"
+            time="Yesterday"
+          />
+        </section>
+      </div>
+    </section>
+  );
+}
+function Stat({
+  label,
+  number,
+  hint,
+}: {
+  label: string;
+  number: number;
+  hint: string;
+}) {
+  return (
+    <div className="stat">
+      <span className="label">{label}</span>
+      <div className="number">{number}</div>
+      <div className="hint">
+        <b>{hint.split(" ")[0]}</b> {hint.substring(hint.indexOf(" ") + 1)}
+      </div>
+    </div>
+  );
+}
+function Project({
+  title,
+  sub,
+  status,
+  tone,
+  variant = "",
+}: {
+  title: string;
+  sub: string;
+  status: string;
+  tone: string;
+  variant?: string;
+}) {
+  return (
+    <div className="project">
+      <div className={`poster ${variant}`} />
+      <div>
+        <b>{title}</b>
+        <small>{sub}</small>
+      </div>
+      <span className={`pill ${tone}`}>{status}</span>
+    </div>
+  );
+}
+function Activity({ text, time }: { text: string; time: string }) {
+  return (
+    <div className="activity">
+      <span className="dot" />
+      <div>
+        {text}
+        <br />
+        <small>{time}</small>
+      </div>
     </div>
   );
 }
