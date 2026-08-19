@@ -12,21 +12,38 @@ Cutroom is a demo client-management and content portal for a video production ag
 - Content Library filters by resource category and client.
 - Add sample resources to a client profile.
 - Responsive layout, route-aware navigation, clickable breadcrumbs, and a persistent dark-mode toggle.
+- Google and email/password sign-in through Firebase Authentication.
+- A protected portal: users must sign in before viewing client data.
+- Shared real-time client and resource data stored in Cloud Firestore.
 
-For this prototype, client/resource changes are saved in the browser with `localStorage`, so they survive refreshes in the same browser. Firebase will replace this temporary persistence in the next phase.
+The first authenticated user seeds the demonstration clients and resources into an empty Firestore database. Later additions and edits are shared with other signed-in users immediately.
 
 ## Tech stack
 
 - Next.js 16 with the App Router
 - React and TypeScript
 - CSS with reusable components and CSS variables
-- Browser local storage for prototype persistence
+- Firebase Authentication (Google and email/password providers)
+- Cloud Firestore for shared client and resource data
 - GitHub for source control and pull requests
 - Vercel for deployment and preview deployments
 
 ## Run locally
 
 Prerequisites: Node.js 20.9 or later.
+
+Create `.env.local` in the project root and add your Firebase Web app configuration:
+
+```env
+NEXT_PUBLIC_FIREBASE_API_KEY=your-value
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.firebasestorage.app
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-value
+NEXT_PUBLIC_FIREBASE_APP_ID=your-value
+```
+
+The `.env.local` file is intentionally ignored by Git. Do not commit it.
 
 ```bash
 npm install
@@ -53,7 +70,7 @@ app/
   clients/[clientId]/page.tsx Client profile
   library/page.tsx            Content library
 components/                   Reusable navigation and interface components
-lib/                          Types, sample data, and local persistence hook
+lib/                          Types, sample data, Firebase setup, and Firestore hook
 prototype-v1/                 Original HTML, CSS, and JavaScript prototype
 ```
 
@@ -64,8 +81,9 @@ prototype-v1/                 Original HTML, CSS, and JavaScript prototype
 3. Commit the original prototype to GitHub so the development progression is visible.
 4. Scaffold a Next.js application with `create-next-app` and preserve the original prototype.
 5. Rebuild the interface as route-based Next.js pages and reusable React components.
-6. Add client management, resource categories, client-side persistence, dark mode, and responsive styling.
-7. Connect the GitHub repository to Vercel for preview and production deployment workflows.
+6. Add client management, resource categories, dark mode, and responsive styling.
+7. Add Firebase Authentication and Firestore for protected, shared portal data.
+8. Connect the GitHub repository to Vercel for preview and production deployment workflows.
 
 ## Using AI during the exercise
 
@@ -77,7 +95,7 @@ AI was used as a development assistant, not as a replacement for checking the wo
 - Explain how to initialise a Next.js app, use the App Router, and document the local setup.
 - Explain how to connect the GitHub repository to Vercel and use preview deployments.
 - Help convert the original design into reusable Next.js components.
-- Debug implementation issues, including missing page exports, dynamic routes, native dialog behaviour, route-aware navigation, and client/server rendering concerns such as hydration mismatches caused by branching on `typeof window` during the initial render.
+- Debug implementation issues, including missing page exports, dynamic routes, native dialog behaviour, route-aware navigation, Firebase configuration, Firestore permissions, and TypeScript build errors.
 
 The main learning was to give AI clear context, review the generated code, test each change locally, and use error messages as evidence rather than accepting a suggested fix without verification.
 
@@ -89,7 +107,7 @@ The project is developed in focused branches, for example:
 main                         Approved/deployed version
 feature/nextjs-setup         Next.js foundation
 feature/client-dashboard     Portal interface and client features
-feature/firebase-integration Firebase services (next)
+feature/firebase-auth-firestore Firebase Authentication and Firestore
 ```
 
 Recommended workflow:
@@ -105,20 +123,32 @@ Create feature branch
 → Vercel deploys production
 ```
 
-## Next phase: Firebase
+## Firebase setup and deployment
 
-The current local-storage prototype is ready to connect to Firebase:
+1. In Firebase Console, enable **Google** and **Email/Password** under Authentication.
+2. Create a Cloud Firestore database.
+3. Publish these starter Firestore rules so only signed-in users can access the prototype:
 
-1. Enable Firebase Authentication with Google sign-in for team members.
-2. Move client records and resource metadata into Cloud Firestore.
-3. Upload actual video, image, and document files to Firebase Storage.
-4. Store the Firebase Storage path and download URL with each Firestore resource record.
-5. Add Firestore and Storage Security Rules so only authenticated, authorised users can access agency data.
-6. Add Firebase environment variables to Vercel for Preview and Production deployments.
+```js
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
+```
+
+4. Add `localhost` and the Vercel deployment domain to Authentication → Settings → Authorized domains.
+5. Add the six `NEXT_PUBLIC_FIREBASE_…` variables above to Vercel for both Preview and Production, then redeploy.
+
+These rules are appropriate only for the internal demonstration. A production client portal should introduce user roles and client-specific access rules before sharing data with external clients.
 
 ## Current limitations
 
 - This is a demonstration portal, not a production service.
-- Client and resource data are browser-specific until Firestore is connected.
+- All authenticated users currently have access to the same demo data; role-based and client-specific access is not implemented.
 - Resource uploads currently create metadata examples; they do not upload real files.
-- Authentication, user roles, client-only sharing, file previews, and download permissions are planned Firebase additions.
+- File previews, downloads, and true media storage are intentionally out of scope for this demo.
