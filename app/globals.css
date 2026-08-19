@@ -14,10 +14,7 @@ body {
     margin: 0;
     background: var(--canvas);
     color: var(--ink);
-    font:
-        14px Arial,
-        Helvetica,
-        sans-serif;
+    font-family: var(--font-geist-sans), var(--font-geist-sans), Helvetica, sans-serif;
 }
 .app-shell {
     min-height: 100vh;
@@ -67,7 +64,15 @@ nav a:hover {
     background: #2a3b2d;
     color: #fff;
 }
-nav a:first-child {
+.nav-icon {
+    color: #adbaae;
+    display: inline-block;
+    margin-right: 8px;
+}
+nav a.active .nav-icon {
+    color: var(--lime);
+}
+nav a.active {
     background: #2a3b2d;
     color: #fff;
 }
@@ -108,7 +113,7 @@ nav a:first-child {
     justify-content: space-between;
     padding: 0 42px;
     color: #738073;
-    font: 11px monospace;
+    font: 13px monospace;
     letter-spacing: 0.08em;
 }
 .help {
@@ -118,7 +123,7 @@ nav a:first-child {
     height: 24px;
     border: 1px solid #91a091;
     border-radius: 50%;
-    font: bold 13px Arial;
+    font: bold 13px var(--font-geist-sans);
 }
 .page {
   max-width: 1200px;
@@ -151,10 +156,10 @@ nav a:first-child {
   background: var(--dark);
   border: 0;
   border-radius: 7px;
-  padding: 12px 16px;
+  padding: 15px 17px;
   color: #fff;
   text-decoration: none;
-  font: bold 12px Arial;
+  font: bold 12px var(--font-geist-sans);
   cursor: pointer;
 }
 .button:hover {
@@ -284,7 +289,7 @@ nav a:first-child {
   border: 1px solid var(--line);
   border-radius: 7px;
   background: #fff;
-  font: 13px Arial;
+  font: 13px var(--font-geist-sans);
 }
 .client-grid {
   display: grid;
@@ -359,7 +364,7 @@ nav a:first-child {
   border: 1px solid var(--line);
   border-radius: 6px;
   padding: 10px;
-  font: 13px Arial;
+  font: 13px var(--font-geist-sans);
 }
 .dialog-actions {
   display: flex;
