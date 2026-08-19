@@ -17,10 +17,11 @@ export function usePortalData() {
 
   useEffect(() => {
     if (!db) return;
-    const seed = async () => { const [clientDocs, resourceDocs] = await Promise.all([getDocs(collection(db, "clients")), getDocs(collection(db, "resources"))]); if (clientDocs.empty && resourceDocs.empty) { const batch = writeBatch(db); initialClients.forEach((client) => batch.set(doc(db, "clients", client.id), client)); initialResources.forEach((resource) => batch.set(doc(db, "resources", resource.id), resource)); await batch.commit(); } };
+    const firestore = db;
+    const seed = async () => { const [clientDocs, resourceDocs] = await Promise.all([getDocs(collection(firestore, "clients")), getDocs(collection(firestore, "resources"))]); if (clientDocs.empty && resourceDocs.empty) { const batch = writeBatch(firestore); initialClients.forEach((client) => batch.set(doc(firestore, "clients", client.id), client)); initialResources.forEach((resource) => batch.set(doc(firestore, "resources", resource.id), resource)); await batch.commit(); } };
     void seed();
-    const clientsUnsubscribe = onSnapshot(collection(db, "clients"), (snapshot) => setData((current) => ({ ...current, clients: snapshot.docs.map((item) => item.data() as Client), ready: true })));
-    const resourcesUnsubscribe = onSnapshot(collection(db, "resources"), (snapshot) => setData((current) => ({ ...current, resources: snapshot.docs.map((item) => item.data() as Resource), ready: true })));
+    const clientsUnsubscribe = onSnapshot(collection(firestore, "clients"), (snapshot) => setData((current) => ({ ...current, clients: snapshot.docs.map((item) => item.data() as Client), ready: true })));
+    const resourcesUnsubscribe = onSnapshot(collection(firestore, "resources"), (snapshot) => setData((current) => ({ ...current, resources: snapshot.docs.map((item) => item.data() as Resource), ready: true })));
     return () => { clientsUnsubscribe(); resourcesUnsubscribe(); };
   }, []);
 
@@ -28,11 +29,13 @@ export function usePortalData() {
 
   const saveClients = (next: Client[]) => {
     setData((prev) => ({ ...prev, clients: next }));
-    if (db) void Promise.all(next.map((client) => setDoc(doc(db, "clients", client.id), client)));
+    const firestore = db;
+    if (firestore) void Promise.all(next.map((client) => setDoc(doc(firestore, "clients", client.id), client)));
   };
   const saveResources = (next: Resource[]) => {
     setData((prev) => ({ ...prev, resources: next }));
-    if (db) void Promise.all(next.map((resource) => setDoc(doc(db, "resources", resource.id), resource)));
+    const firestore = db;
+    if (firestore) void Promise.all(next.map((resource) => setDoc(doc(firestore, "resources", resource.id), resource)));
   };
   return { clients, resources, ready, saveClients, saveResources };
 }
