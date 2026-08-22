@@ -2,6 +2,8 @@
 
 Cutroom is a demo client-management and content portal for a video production agency. It was built as a Week One development exercise for Wolfgramm Holdings to demonstrate planning, local development, AI-assisted problem-solving, GitHub workflow, Next.js, and deployment preparation.
 
+**Live demo:** https://video-agency-client-portal.vercel.app/
+
 ## What the demo does
 
 - Dashboard with active-client, project, and asset summaries.
